@@ -1,4 +1,4 @@
-FROM debian:bookworm-slim AS build_stage
+FROM debian:bookworm-slim@sha256:90522eeb7e5923ee2b871c639059537b30521272f10ca86fdbbbb2b75a8c40cd AS build_stage
 
 ARG DEBIAN_FRONTEND="noninteractive"
 ARG PUID=1000
@@ -49,8 +49,8 @@ FROM bookworm-root AS build_stage_wine
 
 ARG DEBIAN_FRONTEND="noninteractive"
 ARG WINE_BRANCH=devel
-ARG WINE_VERSION=9.12~bookworm-1
-ARG WINE_MONO_VERSION=9.2.0
+ARG WINE_VERSION=10.5~bookworm-1
+ARG WINE_MONO_VERSION=10.0.0
 
 ADD https://dl.winehq.org/wine-builds/winehq.key /tmp/winehq-archive.key
 ADD --chmod=644 https://dl.winehq.org/wine-builds/debian/dists/bookworm/winehq-bookworm.sources /tmp/winehq-bookworm.sources
