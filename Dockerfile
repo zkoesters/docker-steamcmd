@@ -1,48 +1,49 @@
-FROM debian:bookworm-slim@sha256:90522eeb7e5923ee2b871c639059537b30521272f10ca86fdbbbb2b75a8c40cd AS build_stage
+FROM debian:bookworm-slim@sha256:e5865e6858dacc255bead044a7f2d0ad8c362433cfaa5acefb670c1edf54dfef AS build_stage
 
 ARG DEBIAN_FRONTEND="noninteractive"
 ARG PUID=1000
+
 ENV USER=steam
-ENV HOMEDIR="/home/${USER}"
-ENV STEAMCMDDIR="${HOMEDIR}/steamcmd"
+ENV HOME_PATH="/home/${USER}"
+ENV STEAMCMD_PATH="${HOME_PATH}/steamcmd"
+ENV STEAM_COMPAT_CLIENT_INSTALL_PATH="$STEAMCMD_PATH"
 
 ADD --chmod=644 https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz /tmp/steamcmd_linux.tar.gz
 
 RUN set -x \
-	# Install, update & upgrade packages
 	&& apt-get update \
 	&& apt-get install -y --no-install-recommends --no-install-suggests \
 	    ca-certificates=20230311 \
+	    dbus=1.14.10-1~deb12u1 \
 	    lib32gcc-s1=12.2.0-14+deb12u1 \
 		lib32stdc++6=12.2.0-14+deb12u1 \
 		locales=2.36-9+deb12u10 \
 	&& sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen \
 	&& dpkg-reconfigure --frontend=noninteractive locales \
-	# Create unprivileged user
 	&& useradd -u "${PUID}" -m "${USER}" \
-	# Download SteamCMD, execute as user
 	&& su "${USER}" -c \
-		"mkdir -p \"${STEAMCMDDIR}\" \
-                && tar xvzf /tmp/steamcmd_linux.tar.gz -C \"${STEAMCMDDIR}\" \
-                && \"./${STEAMCMDDIR}/steamcmd.sh\" +quit \
-                && ln -s \"${STEAMCMDDIR}/linux32/steamclient.so\" \"${STEAMCMDDIR}/steamservice.so\" \
-                && mkdir -p \"${HOMEDIR}/.steam/sdk32\" \
-                && ln -s \"${STEAMCMDDIR}/linux32/steamclient.so\" \"${HOMEDIR}/.steam/sdk32/steamclient.so\" \
-                && ln -s \"${STEAMCMDDIR}/linux32/steamcmd\" \"${STEAMCMDDIR}/linux32/steam\" \
-                && mkdir -p \"${HOMEDIR}/.steam/sdk64\" \
-                && ln -s \"${STEAMCMDDIR}/linux64/steamclient.so\" \"${HOMEDIR}/.steam/sdk64/steamclient.so\" \
-                && ln -s \"${STEAMCMDDIR}/linux64/steamcmd\" \"${STEAMCMDDIR}/linux64/steam\" \
-                && ln -s \"${STEAMCMDDIR}/steamcmd.sh\" \"${STEAMCMDDIR}/steam.sh\"" \
-	# Symlink steamclient.so; So misconfigured dedicated servers can find it
- 	&& ln -s "${STEAMCMDDIR}/linux64/steamclient.so" "/usr/lib/x86_64-linux-gnu/steamclient.so" \
+		"mkdir -p \"${STEAMCMD_PATH}\" \
+                && tar xvzf /tmp/steamcmd_linux.tar.gz -C \"${STEAMCMD_PATH}\" \
+                && \"./${STEAMCMD_PATH}/steamcmd.sh\" +quit \
+                && ln -s \"${STEAMCMD_PATH}/linux32/steamclient.so\" \"${STEAMCMD_PATH}/steamservice.so\" \
+                && mkdir -p \"${HOME_PATH}/.steam/sdk32\" \
+                && ln -s \"${STEAMCMD_PATH}/linux32/steamclient.so\" \"${HOME_PATH}/.steam/sdk32/steamclient.so\" \
+                && ln -s \"${STEAMCMD_PATH}/linux32/steamcmd\" \"${STEAMCMD_PATH}/linux32/steam\" \
+                && mkdir -p \"${HOME_PATH}/.steam/sdk64\" \
+                && ln -s \"${STEAMCMD_PATH}/linux64/steamclient.so\" \"${HOME_PATH}/.steam/sdk64/steamclient.so\" \
+                && ln -s \"${STEAMCMD_PATH}/linux64/steamcmd\" \"${STEAMCMD_PATH}/linux64/steam\" \
+                && ln -s \"${STEAMCMD_PATH}/steamcmd.sh\" \"${STEAMCMD_PATH}/steam.sh\"" \
+ 	&& ln -s "${STEAMCMD_PATH}/linux64/steamclient.so" "/usr/lib/x86_64-linux-gnu/steamclient.so" \
+ 	&& rm -f /etc/machine-id \
+    && dbus-uuidgen --ensure=/etc/machine-id \
+    && apt-get purge -y --auto-remove dbus \
  	&& rm -f /tmp/steamcmd_linux.tar.gz \
 	&& rm -rf /var/lib/apt/lists/*
 
 FROM build_stage AS bookworm-root
-WORKDIR ${STEAMCMDDIR}
+WORKDIR ${STEAMCMD_PATH}
 
 FROM bookworm-root AS bookworm
-# Switch to user
 USER ${USER}
 
 FROM bookworm-root AS build_stage_wine
@@ -82,8 +83,34 @@ RUN dpkg --add-architecture i386 \
     && rm -rf /var/lib/apt/lists/*
 
 FROM build_stage_wine AS bookworm-wine-root
-WORKDIR ${STEAMCMDDIR}
+WORKDIR ${STEAMCMD_PATH}
 
 FROM bookworm-wine-root AS bookworm-wine
-# Switch to user
+USER ${USER}
+
+FROM bookworm-root AS build_stage_proton
+
+ARG DEBIAN_FRONTEND="noninteractive"
+ARG PROTON_GE_VERSION=10-4
+
+ADD --chmod=644 https://github.com/GloriousEggroll/proton-ge-custom/releases/download/GE-Proton${PROTON_GE_VERSION}/GE-Proton${PROTON_GE_VERSION}.tar.gz /tmp/GE-Proton${PROTON_GE_VERSION}.tar.gz
+
+RUN dpkg --add-architecture i386 \
+    && apt-get update -y \
+    && apt-get install -y --no-install-recommends --no-install-suggests \
+        libvulkan1=1.3.239.0-1 \
+		winbind=2:4.17.12+dfsg-0+deb12u1 \
+		xvfb=2:21.1.7-3+deb12u9 \
+		xz-utils=5.4.1-1 \
+	&& su "${USER}" -c \
+	    "mkdir -p \"${STEAMCMD_PATH}/compatibilitytools.d\" \
+	        && mkdir -p \"${HOME_PATH}/.config/protonfixes\" \
+	        && tar xvzf /tmp/GE-Proton${PROTON_GE_VERSION}.tar.gz -C \"${STEAMCMD_PATH}/compatibilitytools.d\"" \
+	&& rm /tmp/GE-Proton${PROTON_GE_VERSION}.tar.gz \
+    && rm -rf /var/lib/apt/lists/*
+
+FROM build_stage_proton AS bookworm-proton-root
+WORKDIR ${STEAMCMD_PATH}
+
+FROM bookworm-proton-root AS bookworm-proton
 USER ${USER}
