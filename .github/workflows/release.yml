@@ -24,6 +24,8 @@ jobs:
           - version: 'bookworm'
           - version: 'bookworm-wine-root'
           - version: 'bookworm-wine'
+          - version: 'bookworm-proton-root'
+          - version: 'bookworm-proton'
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2

@@ -7,7 +7,7 @@ GIT=git
 OFFIMG_LOCAL_CLONE=$(HOME)/official-images
 OFFIMG_REPO_URL=https://github.com/docker-library/official-images.git
 
-VERSIONS = bookworm-root bookworm bookworm-wine-root bookworm-wine
+VERSIONS = bookworm-root bookworm bookworm-wine-root bookworm-wine bookworm-proton-root bookworm-proton
 
 all: build test
 
