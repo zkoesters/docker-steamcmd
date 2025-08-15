@@ -8,16 +8,27 @@ ENV HOME_PATH="/home/${USER}"
 ENV STEAMCMD_PATH="${HOME_PATH}/steamcmd"
 ENV STEAM_COMPAT_CLIENT_INSTALL_PATH="$STEAMCMD_PATH"
 
+# renovate: suite=bookworm depName=ca-certificates
+ENV CA_CERTIFICATES_VERSION="20230311"
+# renovate: suite=bookworm depName=dbus
+ENV DBUS_VERSION="1.14.10-1~deb12u1"
+# renovate: suite=bookworm depName=lib32gcc-s1
+ENV LIB32GCC_S1_VERSION="12.2.0-14+deb12u1"
+# renovate: suite=bookworm depName=lib32stdc++6
+ENV LIB32STDCPP6_VERSION="12.2.0-14+deb12u1"
+# renovate: suite=bookworm depName=locales
+ENV LOCALES_VERSION="2.36-9+deb12u10"
+
 ADD --chmod=644 https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz /tmp/steamcmd_linux.tar.gz
 
 RUN set -x \
 	&& apt-get update \
 	&& apt-get install -y --no-install-recommends --no-install-suggests \
-	    ca-certificates=20230311 \
-	    dbus=1.14.10-1~deb12u1 \
-	    lib32gcc-s1=12.2.0-14+deb12u1 \
-		lib32stdc++6=12.2.0-14+deb12u1 \
-		locales=2.36-9+deb12u10 \
+	    ca-certificates="${CA_CERTIFICATES_VERSION}" \
+	    dbus="${DBUS_VERSION}" \
+	    lib32gcc-s1="${LIB32GCC_S1_VERSION}" \
+		lib32stdc++6="${LIB32STDCPP6_VERSION}" \
+		locales="${LOCALES_VERSION}" \
 	&& sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen \
 	&& dpkg-reconfigure --frontend=noninteractive locales \
 	&& useradd -u "${PUID}" -m "${USER}" \
@@ -53,6 +64,17 @@ ARG WINE_BRANCH=devel
 ARG WINE_VERSION=10.5~bookworm-1
 ARG WINE_MONO_VERSION=10.0.0
 
+# renovate: suite=bookworm depName=gnupg
+ENV GNUPG_VERSION="2.2.40-1.1"
+# renovate: suite=bookworm depName=libvulkan1
+ENV LIBVULKAN1_VERSION="1.3.239.0-1"
+# renovate: suite=bookworm depName=winbind
+ENV WINBIND_VERSION="2:4.17.12+dfsg-0+deb12u1"
+# renovate: suite=bookworm depName=xvfb
+ENV XVFB_VERSION="2:21.1.7-3+deb12u9"
+# renovate: suite=bookworm depName=xz-utils
+ENV XZ_UTILS_VERSION="5.4.1-1"
+
 ADD https://dl.winehq.org/wine-builds/winehq.key /tmp/winehq-archive.key
 ADD --chmod=644 https://dl.winehq.org/wine-builds/debian/dists/bookworm/winehq-bookworm.sources /tmp/winehq-bookworm.sources
 ADD https://dl.winehq.org/wine/wine-mono/${WINE_MONO_VERSION}/wine-mono-${WINE_MONO_VERSION}-x86.tar.xz /tmp/wine-mono-${WINE_MONO_VERSION}-x86.tar.xz
@@ -61,15 +83,15 @@ RUN dpkg --add-architecture i386 \
 	&& mkdir -pm755 /etc/apt/keyrings \
     && apt-get update -y \
     && apt-get install -y --no-install-recommends --no-install-suggests \
-        gnupg=2.2.40-1.1 \
+        gnupg="${GNUPG_VERSION}" \
     && gpg --dearmor -o /etc/apt/keyrings/winehq-archive.key /tmp/winehq-archive.key \
     && mv /tmp/winehq-bookworm.sources /etc/apt/sources.list.d/winehq-bookworm.sources \
     && apt-get update -y \
     && apt-get install -y --no-install-recommends --no-install-suggests \
-        libvulkan1=1.3.239.0-1 \
-		winbind=2:4.17.12+dfsg-0+deb12u1 \
-		xvfb=2:21.1.7-3+deb12u9 \
-		xz-utils=5.4.1-1 \
+        libvulkan1="${LIBVULKAN1_VERSION}" \
+		winbind="${WINBIND_VERSION}" \
+		xvfb="${XVFB_VERSION}" \
+		xz-utils="${XZ_UTILS_VERSION}" \
 	&& apt-get install -y --install-recommends \
 	    wine-${WINE_BRANCH}-amd64=${WINE_VERSION} \
 		wine-${WINE_BRANCH}-i386=${WINE_VERSION} \
