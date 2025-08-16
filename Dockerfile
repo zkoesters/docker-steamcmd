@@ -9,7 +9,7 @@ ENV STEAMCMD_PATH="${HOME_PATH}/steamcmd"
 ENV STEAM_COMPAT_CLIENT_INSTALL_PATH="$STEAMCMD_PATH"
 
 # renovate: suite=bookworm depName=ca-certificates
-ENV CA_CERTIFICATES_VERSION="20230311"
+ENV CA_CERTIFICATES_VERSION="20230311+deb12u1"
 # renovate: suite=bookworm depName=dbus
 ENV DBUS_VERSION="1.14.10-1~deb12u1"
 # renovate: suite=bookworm depName=lib32gcc-s1
@@ -69,9 +69,9 @@ ENV GNUPG_VERSION="2.2.40-1.1"
 # renovate: suite=bookworm depName=libvulkan1
 ENV LIBVULKAN1_VERSION="1.3.239.0-1"
 # renovate: suite=bookworm depName=winbind
-ENV WINBIND_VERSION="2:4.17.12+dfsg-0+deb12u1"
+ENV WINBIND_VERSION="2:4.17.12+dfsg-0+deb12u2"
 # renovate: suite=bookworm depName=xvfb
-ENV XVFB_VERSION="2:21.1.7-3+deb12u9"
+ENV XVFB_VERSION="2:21.1.7-3+deb12u10"
 # renovate: suite=bookworm depName=xz-utils
 ENV XZ_UTILS_VERSION="5.4.1-1"
 
@@ -115,15 +115,24 @@ FROM bookworm-root AS build_stage_proton
 ARG DEBIAN_FRONTEND="noninteractive"
 ARG PROTON_GE_VERSION=10-4
 
+# renovate: suite=bookworm depName=libvulkan1
+ENV LIBVULKAN1_VERSION="1.3.239.0-1"
+# renovate: suite=bookworm depName=winbind
+ENV WINBIND_VERSION="2:4.17.12+dfsg-0+deb12u2"
+# renovate: suite=bookworm depName=xvfb
+ENV XVFB_VERSION="2:21.1.7-3+deb12u10"
+# renovate: suite=bookworm depName=xz-utils
+ENV XZ_UTILS_VERSION="5.4.1-1"
+
 ADD --chmod=644 https://github.com/GloriousEggroll/proton-ge-custom/releases/download/GE-Proton${PROTON_GE_VERSION}/GE-Proton${PROTON_GE_VERSION}.tar.gz /tmp/GE-Proton${PROTON_GE_VERSION}.tar.gz
 
 RUN dpkg --add-architecture i386 \
     && apt-get update -y \
     && apt-get install -y --no-install-recommends --no-install-suggests \
-        libvulkan1=1.3.239.0-1 \
-		winbind=2:4.17.12+dfsg-0+deb12u1 \
-		xvfb=2:21.1.7-3+deb12u9 \
-		xz-utils=5.4.1-1 \
+        libvulkan1="${LIBVULKAN1_VERSION}" \
+		winbind="${WINBIND_VERSION}" \
+		xvfb="${XVFB_VERSION}" \
+		xz-utils="${XZ_UTILS_VERSION}" \
 	&& su "${USER}" -c \
 	    "mkdir -p \"${STEAMCMD_PATH}/compatibilitytools.d\" \
 	        && mkdir -p \"${HOME_PATH}/.config/protonfixes\" \
