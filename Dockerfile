@@ -61,8 +61,8 @@ FROM bookworm-root AS build_stage_wine
 
 ARG DEBIAN_FRONTEND="noninteractive"
 ARG WINE_BRANCH=devel
-ARG WINE_VERSION=10.5~bookworm-1
-ARG WINE_MONO_VERSION=10.0.0
+ARG WINE_VERSION=10.10~bookworm-1
+ARG WINE_MONO_VERSION=10.1.0
 
 # renovate: suite=bookworm depName=gnupg
 ENV GNUPG_VERSION="2.2.40-1.1"
@@ -113,7 +113,7 @@ USER ${USER}
 FROM bookworm-root AS build_stage_proton
 
 ARG DEBIAN_FRONTEND="noninteractive"
-ARG PROTON_GE_VERSION=10-4
+ARG PROTON_GE_VERSION=10-12
 
 # renovate: suite=bookworm depName=libvulkan1
 ENV LIBVULKAN1_VERSION="1.3.239.0-1"
