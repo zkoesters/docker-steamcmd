@@ -20,12 +20,12 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - version: 'bookworm-root'
-          - version: 'bookworm'
-          - version: 'bookworm-wine-root'
-          - version: 'bookworm-wine'
-          - version: 'bookworm-proton-root'
-          - version: 'bookworm-proton'
+          - version: 'trixie-root'
+          - version: 'trixie'
+          - version: 'trixie-wine-root'
+          - version: 'trixie-wine'
+          - version: 'trixie-proton-root'
+          - version: 'trixie-proton'
     steps:
       - name: Checkout
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
