@@ -69,7 +69,7 @@ ENV GNUPG_VERSION="2.4.7-21"
 # renovate: suite=trixie depName=libvulkan1
 ENV LIBVULKAN1_VERSION="1.4.309.0-1"
 # renovate: suite=trixie depName=winbind
-ENV WINBIND_VERSION="2:4.22.3+dfsg-4"
+ENV WINBIND_VERSION="2:4.22.4+dfsg-1~deb13u1"
 # renovate: suite=trixie depName=xvfb
 ENV XVFB_VERSION="2:21.1.16-1.3"
 # renovate: suite=trixie depName=xz-utils
@@ -118,7 +118,7 @@ ARG PROTON_GE_VERSION=10-15
 # renovate: suite=trixie depName=libvulkan1
 ENV LIBVULKAN1_VERSION="1.4.309.0-1"
 # renovate: suite=trixie depName=winbind
-ENV WINBIND_VERSION="2:4.22.3+dfsg-4"
+ENV WINBIND_VERSION="2:4.22.4+dfsg-1~deb13u1"
 # renovate: suite=trixie depName=xvfb
 ENV XVFB_VERSION="2:21.1.16-1.3"
 # renovate: suite=trixie depName=xz-utils
