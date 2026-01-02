@@ -71,7 +71,7 @@ ENV LIBVULKAN1_VERSION="1.4.309.0-1"
 # renovate: suite=trixie depName=winbind
 ENV WINBIND_VERSION="2:4.22.4+dfsg-1~deb13u1"
 # renovate: suite=trixie depName=xvfb
-ENV XVFB_VERSION="2:21.1.16-1.3"
+ENV XVFB_VERSION="2:21.1.16-1.3+deb13u1"
 # renovate: suite=trixie depName=xz-utils
 ENV XZ_UTILS_VERSION="5.8.1-1"
 
@@ -120,7 +120,7 @@ ENV LIBVULKAN1_VERSION="1.4.309.0-1"
 # renovate: suite=trixie depName=winbind
 ENV WINBIND_VERSION="2:4.22.4+dfsg-1~deb13u1"
 # renovate: suite=trixie depName=xvfb
-ENV XVFB_VERSION="2:21.1.16-1.3"
+ENV XVFB_VERSION="2:21.1.16-1.3+deb13u1"
 # renovate: suite=trixie depName=xz-utils
 ENV XZ_UTILS_VERSION="5.8.1-1"
 
