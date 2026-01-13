@@ -1,4 +1,4 @@
-FROM debian:trixie-slim@sha256:a347fd7510ee31a84387619a492ad6c8eb0af2f2682b916ff3e643eb076f925a AS build_stage
+FROM debian:trixie-slim@sha256:77ba0164de17b88dd0bf6cdc8f65569e6e5fa6cd256562998b62553134a00ef0 AS build_stage
 
 ARG DEBIAN_FRONTEND="noninteractive"
 ARG PUID=1000
