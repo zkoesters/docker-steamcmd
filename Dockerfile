@@ -17,7 +17,7 @@ ENV LIB32GCC_S1_VERSION="14.2.0-19"
 # renovate: suite=trixie depName=lib32stdc++6
 ENV LIB32STDCPP6_VERSION="14.2.0-19"
 # renovate: suite=trixie depName=locales
-ENV LOCALES_VERSION="2.41-12"
+ENV LOCALES_VERSION="2.41-12+deb13u1"
 
 ADD --chmod=644 https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz /tmp/steamcmd_linux.tar.gz
 
