@@ -65,7 +65,7 @@ ARG WINE_VERSION=10.10~trixie-1
 ARG WINE_MONO_VERSION=10.1.0
 
 # renovate: suite=trixie depName=gnupg
-ENV GNUPG_VERSION="2.4.7-21"
+ENV GNUPG_VERSION="2.4.7-21+deb13u1"
 # renovate: suite=trixie depName=libvulkan1
 ENV LIBVULKAN1_VERSION="1.4.309.0-1"
 # renovate: suite=trixie depName=winbind
