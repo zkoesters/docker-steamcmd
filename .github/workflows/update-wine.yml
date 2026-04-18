@@ -79,7 +79,7 @@ jobs:
         if: steps.versions.outputs.changed == 'true'
         uses: peter-evans/create-pull-request@271a8d0340265f705b14b6d32b9829c1cb33d45e # v7.0.8
         with:
-          branch: chore/update-wine-${{ steps.versions.outputs.wine_version }}
+          branch: chore/update-wine-${{ steps.versions.outputs.wine_tag }}
           commit-message: "chore(deps): update wine to ${{ steps.versions.outputs.wine_version }} and wine-mono to ${{ steps.versions.outputs.mono_version }}"
           title: "chore(deps): update wine to ${{ steps.versions.outputs.wine_version }} and wine-mono to ${{ steps.versions.outputs.mono_version }}"
           body: |
