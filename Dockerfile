@@ -1,4 +1,4 @@
-FROM debian:trixie-slim@sha256:a347fd7510ee31a84387619a492ad6c8eb0af2f2682b916ff3e643eb076f925a AS build_stage
+FROM debian:trixie-slim@sha256:4ffb3a1511099754cddc70eb1b12e50ffdb67619aa0ab6c13fcd800a78ef7c7a AS build_stage
 
 ARG DEBIAN_FRONTEND="noninteractive"
 ARG PUID=1000
@@ -17,7 +17,7 @@ ENV LIB32GCC_S1_VERSION="14.2.0-19"
 # renovate: suite=trixie depName=lib32stdc++6
 ENV LIB32STDCPP6_VERSION="14.2.0-19"
 # renovate: suite=trixie depName=locales
-ENV LOCALES_VERSION="2.41-12"
+ENV LOCALES_VERSION="2.41-12+deb13u2"
 
 ADD --chmod=644 https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz /tmp/steamcmd_linux.tar.gz
 
@@ -65,13 +65,13 @@ ARG WINE_VERSION=10.10~trixie-1
 ARG WINE_MONO_VERSION=10.1.0
 
 # renovate: suite=trixie depName=gnupg
-ENV GNUPG_VERSION="2.4.7-21"
+ENV GNUPG_VERSION="2.4.7-21+deb13u1"
 # renovate: suite=trixie depName=libvulkan1
 ENV LIBVULKAN1_VERSION="1.4.309.0-1"
 # renovate: suite=trixie depName=winbind
-ENV WINBIND_VERSION="2:4.22.4+dfsg-1~deb13u1"
+ENV WINBIND_VERSION="2:4.22.8+dfsg-0+deb13u1"
 # renovate: suite=trixie depName=xvfb
-ENV XVFB_VERSION="2:21.1.16-1.3"
+ENV XVFB_VERSION="2:21.1.16-1.3+deb13u1"
 # renovate: suite=trixie depName=xz-utils
 ENV XZ_UTILS_VERSION="5.8.1-1"
 
@@ -118,9 +118,9 @@ ARG PROTON_GE_VERSION=10-15
 # renovate: suite=trixie depName=libvulkan1
 ENV LIBVULKAN1_VERSION="1.4.309.0-1"
 # renovate: suite=trixie depName=winbind
-ENV WINBIND_VERSION="2:4.22.4+dfsg-1~deb13u1"
+ENV WINBIND_VERSION="2:4.22.8+dfsg-0+deb13u1"
 # renovate: suite=trixie depName=xvfb
-ENV XVFB_VERSION="2:21.1.16-1.3"
+ENV XVFB_VERSION="2:21.1.16-1.3+deb13u1"
 # renovate: suite=trixie depName=xz-utils
 ENV XZ_UTILS_VERSION="5.8.1-1"
 
