@@ -115,7 +115,7 @@ USER ${USER}
 FROM trixie-root AS build_stage_proton
 
 ARG DEBIAN_FRONTEND="noninteractive"
-# renovate: datasource=github-releases depName=GloriousEggroll/proton-ge-custom extractVersion=^GE-Proton(?<version>.+)$
+# renovate: datasource=github-releases depName=GloriousEggroll/proton-ge-custom
 ARG PROTON_GE_VERSION=10-15
 
 # renovate: suite=trixie depName=libvulkan1
