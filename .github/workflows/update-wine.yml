@@ -1,0 +1,92 @@
+name: Update Wine + Wine Mono
+
+on:
+  schedule:
+    - cron: '0 6 * * 1'  # Every Monday at 06:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update:
+    name: Check and update Wine + Wine Mono versions
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Resolve latest Wine + paired Wine Mono versions
+        id: versions
+        run: |
+          set -euo pipefail
+
+          SUITE=trixie
+          PACKAGES_URL="https://dl.winehq.org/wine-builds/debian/dists/${SUITE}/main/binary-amd64/Packages"
+
+          # Latest winehq-devel version from the apt repo (e.g. "11.6~trixie-1")
+          WINE_VERSION=$(
+            curl -fsSL "${PACKAGES_URL}" \
+              | awk '/^Package: winehq-devel/{found=1} found && /^Version:/{print $2; found=0}' \
+              | sort -V \
+              | tail -1
+          )
+          echo "Latest Wine version: ${WINE_VERSION}"
+
+          # Derive the git tag: strip the "~trixie-1" suffix (e.g. "11.6~trixie-1" -> "wine-11.6")
+          WINE_TAG="wine-$(echo "${WINE_VERSION}" | sed 's/~.*//')"
+          echo "Wine git tag: ${WINE_TAG}"
+
+          # Look up the Mono version that this Wine release requires
+          MONO_VERSION=$(
+            curl -fsSL "https://gitlab.winehq.org/wine/wine/-/raw/${WINE_TAG}/dlls/mscoree/mscoree_private.h" \
+              | grep -oP '(?<=#define WINE_MONO_VERSION ")[^"]+'
+          )
+          echo "Paired Wine Mono version: ${MONO_VERSION}"
+
+          # Read current values from Dockerfile
+          CURRENT_WINE=$(grep -oP '(?<=^ARG WINE_VERSION=).+' Dockerfile)
+          CURRENT_MONO=$(grep -oP '(?<=^ARG WINE_MONO_VERSION=).+' Dockerfile)
+          echo "Current Wine version:      ${CURRENT_WINE}"
+          echo "Current Wine Mono version: ${CURRENT_MONO}"
+
+          echo "wine_version=${WINE_VERSION}"       >> "$GITHUB_OUTPUT"
+          echo "mono_version=${MONO_VERSION}"       >> "$GITHUB_OUTPUT"
+          echo "current_wine=${CURRENT_WINE}"       >> "$GITHUB_OUTPUT"
+          echo "current_mono=${CURRENT_MONO}"       >> "$GITHUB_OUTPUT"
+
+          if [[ "${WINE_VERSION}" != "${CURRENT_WINE}" || "${MONO_VERSION}" != "${CURRENT_MONO}" ]]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Update Dockerfile
+        if: steps.versions.outputs.changed == 'true'
+        env:
+          WINE_VERSION: ${{ steps.versions.outputs.wine_version }}
+          MONO_VERSION: ${{ steps.versions.outputs.mono_version }}
+        run: |
+          set -euo pipefail
+          sed -i "s/^ARG WINE_VERSION=.*/ARG WINE_VERSION=${WINE_VERSION}/" Dockerfile
+          sed -i "s/^ARG WINE_MONO_VERSION=.*/ARG WINE_MONO_VERSION=${MONO_VERSION}/" Dockerfile
+
+      - name: Open pull request
+        if: steps.versions.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@271a8d0340265f705b14b6d32b9829c1cb33d45e # v7.0.8
+        with:
+          branch: chore/update-wine-${{ steps.versions.outputs.wine_version }}
+          commit-message: "chore(deps): update wine to ${{ steps.versions.outputs.wine_version }} and wine-mono to ${{ steps.versions.outputs.mono_version }}"
+          title: "chore(deps): update wine to ${{ steps.versions.outputs.wine_version }} and wine-mono to ${{ steps.versions.outputs.mono_version }}"
+          body: |
+            Automated update of the paired Wine + Wine Mono versions.
+
+            | Package | Current | New |
+            |---------|---------|-----|
+            | Wine (`winehq-devel`) | `${{ steps.versions.outputs.current_wine }}` | `${{ steps.versions.outputs.wine_version }}` |
+            | Wine Mono | `${{ steps.versions.outputs.current_mono }}` | `${{ steps.versions.outputs.mono_version }}` |
+
+            The Wine Mono version is derived directly from [`dlls/mscoree/mscoree_private.h`](https://gitlab.winehq.org/wine/wine/-/blob/wine-${{ steps.versions.outputs.wine_version }}/dlls/mscoree/mscoree_private.h) in the corresponding Wine release tag, ensuring the two are always in sync.
+          labels: dependencies
+          delete-branch: true
