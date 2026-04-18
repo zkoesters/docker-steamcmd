@@ -16,6 +16,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
 
       - name: Resolve latest Wine + paired Wine Mono versions
         id: versions
@@ -52,6 +54,7 @@ jobs:
           echo "Current Wine Mono version: ${CURRENT_MONO}"
 
           echo "wine_version=${WINE_VERSION}"       >> "$GITHUB_OUTPUT"
+          echo "wine_tag=${WINE_TAG}"               >> "$GITHUB_OUTPUT"
           echo "mono_version=${MONO_VERSION}"       >> "$GITHUB_OUTPUT"
           echo "current_wine=${CURRENT_WINE}"       >> "$GITHUB_OUTPUT"
           echo "current_mono=${CURRENT_MONO}"       >> "$GITHUB_OUTPUT"
@@ -87,6 +90,6 @@ jobs:
             | Wine (`winehq-devel`) | `${{ steps.versions.outputs.current_wine }}` | `${{ steps.versions.outputs.wine_version }}` |
             | Wine Mono | `${{ steps.versions.outputs.current_mono }}` | `${{ steps.versions.outputs.mono_version }}` |
 
-            The Wine Mono version is derived directly from [`dlls/mscoree/mscoree_private.h`](https://gitlab.winehq.org/wine/wine/-/blob/wine-${{ steps.versions.outputs.wine_version }}/dlls/mscoree/mscoree_private.h) in the corresponding Wine release tag, ensuring the two are always in sync.
+            The Wine Mono version is derived directly from [`dlls/mscoree/mscoree_private.h`](https://gitlab.winehq.org/wine/wine/-/blob/${{ steps.versions.outputs.wine_tag }}/dlls/mscoree/mscoree_private.h) in the corresponding Wine release tag, ensuring the two are always in sync.
           labels: dependencies
           delete-branch: true
