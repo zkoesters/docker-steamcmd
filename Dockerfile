@@ -61,7 +61,9 @@ FROM trixie-root AS build_stage_wine
 
 ARG DEBIAN_FRONTEND="noninteractive"
 ARG WINE_BRANCH=devel
+# renovate: datasource=deb depName=winehq-devel registryUrl=https://dl.winehq.org/wine-builds/debian?suite=trixie&components=main
 ARG WINE_VERSION=10.10~trixie-1
+# renovate: datasource=github-releases depName=wine-mono/wine-mono extractVersion=^wine-mono-(?<version>.+)$
 ARG WINE_MONO_VERSION=10.1.0
 
 # renovate: suite=trixie depName=gnupg
@@ -113,6 +115,7 @@ USER ${USER}
 FROM trixie-root AS build_stage_proton
 
 ARG DEBIAN_FRONTEND="noninteractive"
+# renovate: datasource=github-releases depName=GloriousEggroll/proton-ge-custom extractVersion=^GE-Proton(?<version>.+)$
 ARG PROTON_GE_VERSION=10-15
 
 # renovate: suite=trixie depName=libvulkan1
