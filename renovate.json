@@ -3,6 +3,13 @@
   "extends": [
     "config:recommended"
   ],
+  "packageRules": [
+    {
+      "matchDatasources": ["deb", "docker"],
+      "groupName": "debian packages",
+      "groupSlug": "debian-packages"
+    }
+  ],
   "customManagers": [
     {
       "customType": "regex",
