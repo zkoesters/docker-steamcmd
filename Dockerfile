@@ -116,7 +116,7 @@ FROM trixie-root AS build_stage_proton
 
 ARG DEBIAN_FRONTEND="noninteractive"
 # renovate: datasource=github-releases depName=GloriousEggroll/proton-ge-custom
-ARG PROTON_GE_VERSION=10-15
+ARG PROTON_GE_VERSION=10-34
 
 # renovate: suite=trixie depName=libvulkan1
 ENV LIBVULKAN1_VERSION="1.4.309.0-1"
