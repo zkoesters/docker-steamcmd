@@ -10,9 +10,8 @@
       "groupSlug": "debian-packages"
     },
     {
-      "matchDepNames": ["wine-mono/wine-mono"],
-      "groupName": "wine mono",
-      "groupSlug": "wine-mono"
+      "matchDepNames": ["winehq-devel", "wine-mono/wine-mono"],
+      "enabled": false
     },
     {
       "matchDepNames": ["GloriousEggroll/proton-ge-custom"],
@@ -29,23 +28,6 @@
       ],
       "registryUrlTemplate": "https://deb.debian.org/debian?suite={{#if suite }}{{suite}}{{else}}stable{{/if}}&components=main,contrib,non-free&binaryArch=amd64",
       "datasourceTemplate": "deb"
-    },
-    {
-      "customType": "regex",
-      "managerFilePatterns": ["/^Dockerfile$/"],
-      "matchStrings": [
-        "#\\s*renovate:\\s*datasource=deb\\s+depName=(?<depName>.*?)\\s+registryUrl=(?<registryUrl>.*?)\\nARG WINE_VERSION=(?<currentValue>.*)"
-      ],
-      "datasourceTemplate": "deb"
-    },
-    {
-      "customType": "regex",
-      "managerFilePatterns": ["/^Dockerfile$/"],
-      "matchStrings": [
-        "#\\s*renovate:\\s*datasource=github-releases\\s+depName=(?<depName>.*?)\\s+extractVersion=(?<extractVersion>.*?)\\nARG WINE_MONO_VERSION=(?<currentValue>.*)"
-      ],
-      "datasourceTemplate": "github-releases",
-      "extractVersionTemplate": "^wine-mono-(?<version>.+)$"
     },
     {
       "customType": "regex",
