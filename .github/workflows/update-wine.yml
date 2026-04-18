@@ -38,6 +38,8 @@ jobs:
 
           # Derive the git tag: strip the "~trixie-1" suffix (e.g. "11.6~trixie-1" -> "wine-11.6")
           WINE_TAG="wine-$(echo "${WINE_VERSION}" | sed 's/~.*//')"
+          # Plain version number for use in branch names (e.g. "11.6")
+          WINE_VERSION_PLAIN="$(echo "${WINE_VERSION}" | sed 's/~.*//')"
           echo "Wine git tag: ${WINE_TAG}"
 
           # Look up the Mono version that this Wine release requires
@@ -53,9 +55,10 @@ jobs:
           echo "Current Wine version:      ${CURRENT_WINE}"
           echo "Current Wine Mono version: ${CURRENT_MONO}"
 
-          echo "wine_version=${WINE_VERSION}"       >> "$GITHUB_OUTPUT"
-          echo "wine_tag=${WINE_TAG}"               >> "$GITHUB_OUTPUT"
-          echo "mono_version=${MONO_VERSION}"       >> "$GITHUB_OUTPUT"
+          echo "wine_version=${WINE_VERSION}"             >> "$GITHUB_OUTPUT"
+          echo "wine_tag=${WINE_TAG}"                     >> "$GITHUB_OUTPUT"
+          echo "wine_version_plain=${WINE_VERSION_PLAIN}" >> "$GITHUB_OUTPUT"
+          echo "mono_version=${MONO_VERSION}"             >> "$GITHUB_OUTPUT"
           echo "current_wine=${CURRENT_WINE}"       >> "$GITHUB_OUTPUT"
           echo "current_mono=${CURRENT_MONO}"       >> "$GITHUB_OUTPUT"
 
@@ -79,7 +82,12 @@ jobs:
         if: steps.versions.outputs.changed == 'true'
         uses: peter-evans/create-pull-request@271a8d0340265f705b14b6d32b9829c1cb33d45e # v7.0.8
         with:
-          branch: chore/update-wine-${{ steps.versions.outputs.wine_tag }}
+          # Requires a PAT stored as WORKFLOW_TOKEN with repo scope.
+          # The default GITHUB_TOKEN cannot create PRs unless
+          # "Allow GitHub Actions to create and approve pull requests" is
+          # enabled in Settings → Actions → General → Workflow permissions.
+          token: ${{ secrets.WORKFLOW_TOKEN }}
+          branch: chore/update-wine-${{ steps.versions.outputs.wine_version_plain }}
           commit-message: "chore(deps): update wine to ${{ steps.versions.outputs.wine_version }} and wine-mono to ${{ steps.versions.outputs.mono_version }}"
           title: "chore(deps): update wine to ${{ steps.versions.outputs.wine_version }} and wine-mono to ${{ steps.versions.outputs.mono_version }}"
           body: |
