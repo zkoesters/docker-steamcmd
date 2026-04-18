@@ -64,7 +64,7 @@ ARG WINE_BRANCH=devel
 # renovate: datasource=deb depName=winehq-devel registryUrl=https://dl.winehq.org/wine-builds/debian?suite=trixie&components=main
 ARG WINE_VERSION=10.10~trixie-1
 # renovate: datasource=github-releases depName=wine-mono/wine-mono extractVersion=^wine-mono-(?<version>.+)$
-ARG WINE_MONO_VERSION=10.1.0
+ARG WINE_MONO_VERSION=10.4.1
 
 # renovate: suite=trixie depName=gnupg
 ENV GNUPG_VERSION="2.4.7-21+deb13u1"
