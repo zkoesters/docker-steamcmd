@@ -33,10 +33,11 @@
       "customType": "regex",
       "managerFilePatterns": ["/^Dockerfile$/"],
       "matchStrings": [
-        "#\\s*renovate:\\s*datasource=github-releases\\s+depName=(?<depName>.*?)\\s+extractVersion=(?<extractVersion>.*?)\\nARG PROTON_GE_VERSION=(?<currentValue>.*)"
+        "#\\s*renovate:\\s*datasource=github-releases\\s+depName=(?<depName>.*?)\\nARG PROTON_GE_VERSION=(?<currentValue>.*)"
       ],
       "datasourceTemplate": "github-releases",
-      "extractVersionTemplate": "^GE-Proton(?<version>.+)$"
+      "extractVersionTemplate": "^GE-Proton(?<version>.+)$",
+      "versioningTemplate": "loose"
     }
   ]
 }
