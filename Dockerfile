@@ -62,7 +62,7 @@ FROM trixie-root AS build_stage_wine
 ARG DEBIAN_FRONTEND="noninteractive"
 ARG WINE_BRANCH=devel
 # managed by .github/workflows/update-wine.yml — do not add a renovate comment here
-ARG WINE_VERSION=11.6~trixie-1
+ARG WINE_VERSION=11.7~trixie-1
 # version is derived from the Wine release tag; kept in sync by update-wine.yml
 ARG WINE_MONO_VERSION=11.0.0
 
