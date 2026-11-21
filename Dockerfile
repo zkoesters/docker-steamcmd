@@ -1,4 +1,4 @@
-FROM debian:trixie-slim@sha256:f6b08b09a05725f9431502d3b5714f5c4576e82c1a84fa1debe0c24a7e0c3ec4 AS build_stage
+FROM debian:trixie-slim@sha256:a72b4433de1cf7d6bae0c4cee74d0547f58601a643b3375f070c51600d63b6b2 AS build_stage
 
 ARG DEBIAN_FRONTEND="noninteractive"
 ARG PUID=1000
@@ -9,7 +9,7 @@ ENV STEAMCMD_PATH="${HOME_PATH}/steamcmd"
 ENV STEAM_COMPAT_CLIENT_INSTALL_PATH="$STEAMCMD_PATH"
 
 # renovate: suite=trixie depName=ca-certificates
-ENV CA_CERTIFICATES_VERSION="20250419"
+ENV CA_CERTIFICATES_VERSION="20250419+deb13u1"
 # renovate: suite=trixie depName=dbus
 ENV DBUS_VERSION="1.16.2-2"
 # renovate: suite=trixie depName=lib32gcc-s1
@@ -17,7 +17,7 @@ ENV LIB32GCC_S1_VERSION="14.2.0-19"
 # renovate: suite=trixie depName=lib32stdc++6
 ENV LIB32STDCPP6_VERSION="14.2.0-19"
 # renovate: suite=trixie depName=locales
-ENV LOCALES_VERSION="2.41-12+deb13u4"
+ENV LOCALES_VERSION="2.41-12+deb13u5"
 
 ADD --chmod=644 https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz /tmp/steamcmd_linux.tar.gz
 
@@ -73,9 +73,9 @@ ENV LIBVULKAN1_VERSION="1.4.309.0-1"
 # renovate: suite=trixie depName=winbind
 ENV WINBIND_VERSION="2:4.22.11+dfsg-0+deb13u1"
 # renovate: suite=trixie depName=xvfb
-ENV XVFB_VERSION="2:21.1.16-1.3+deb13u3"
+ENV XVFB_VERSION="2:21.1.16-1.3+deb13u4"
 # renovate: suite=trixie depName=xz-utils
-ENV XZ_UTILS_VERSION="5.8.1-1+deb13u1"
+ENV XZ_UTILS_VERSION="5.8.1-1+deb13u2"
 
 ADD https://dl.winehq.org/wine-builds/winehq.key /tmp/winehq-archive.key
 ADD --chmod=644 https://dl.winehq.org/wine-builds/debian/dists/trixie/winehq-trixie.sources /tmp/winehq-trixie.sources
@@ -123,9 +123,9 @@ ENV LIBVULKAN1_VERSION="1.4.309.0-1"
 # renovate: suite=trixie depName=winbind
 ENV WINBIND_VERSION="2:4.22.11+dfsg-0+deb13u1"
 # renovate: suite=trixie depName=xvfb
-ENV XVFB_VERSION="2:21.1.16-1.3+deb13u3"
+ENV XVFB_VERSION="2:21.1.16-1.3+deb13u4"
 # renovate: suite=trixie depName=xz-utils
-ENV XZ_UTILS_VERSION="5.8.1-1+deb13u1"
+ENV XZ_UTILS_VERSION="5.8.1-1+deb13u2"
 
 ADD --chmod=644 https://github.com/GloriousEggroll/proton-ge-custom/releases/download/GE-Proton${PROTON_GE_VERSION}/GE-Proton${PROTON_GE_VERSION}.tar.gz /tmp/GE-Proton${PROTON_GE_VERSION}.tar.gz
 
